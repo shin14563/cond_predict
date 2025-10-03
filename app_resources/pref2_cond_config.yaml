@@ -1,0 +1,30 @@
+# pref2cond_config.yaml
+
+# モデルの出力順（学習時 MultiRMSE の順）
+model_output_order: ["Cooling", "Heating", "BEI", "BPI"]
+
+# ランダム候補数（各ケース）
+n_random: 20000
+
+# BPI 許容誤差（Pref2Cond.csv に BPI_min/max がなければ BPI±tol）
+bpi_tolerance: 0.02
+
+# サンプリング刻み（U値, 日射取得率, 面積率, 開口率などの連続値）
+grid_step: 0.01
+
+# 壁面パラメータ（choices を優先。無ければ min/max、さらに無ければ既定）
+NS_Wall:
+  choices: [136.4616, 180.7740, 197.6436, 204.6924, 271.1808]
+
+EW_Wall:
+  choices: [204.6924, 271.1808, 131.7492, 136.4616, 180.7740]
+
+AreaRatio:
+  choices: [1.0, 0.932252, 0.531220]
+
+# 予測値の丸め桁（内部で 2 桁に丸めます。ここは将来拡張用）
+round_pred:
+  Cooling: 2
+  Heating: 2
+  BEI: 2
+  BPI: 2
