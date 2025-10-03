@@ -1,4 +1,4 @@
-name: Build & Test Pref2Cond (Windows exe + outputs)
+name: Build & Test CondPredict (Windows exe + outputs)
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
 
       # ---- ビルド ----
       - name: Build exe with PyInstaller
-        run: pyinstaller --onefile --name Pref2Cond --add-data "app_resources;app_resources" pref2cond_predict.py
+        run: pyinstaller --onefile --name CondPredict --add-data "app_resources;app_resources" pref2cond_predict.py
 
       # ---- 入力を dist/ にコピー ----
       - name: Copy Pref2Cond.csv
@@ -36,7 +36,7 @@ jobs:
       # ---- exe 実行（出力CSV生成）----
       - name: Run exe to produce outputs
         working-directory: dist
-        run: .\Pref2Cond.exe
+        run: .\CondPredict.exe
 
       # ---- 成果物アップロード ----
       - name: Upload exe artifact
@@ -50,7 +50,7 @@ jobs:
       - name: Upload run outputs
         uses: actions/upload-artifact@v4
         with:
-          name: Pref2Cond-outputs
+          name: CondPredict-outputs
           path: |
             dist/Pref2Cond_result_*.csv
             dist/Pref2Cond.csv
