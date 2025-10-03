@@ -42,8 +42,8 @@ jobs:
       - name: Upload exe artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pref2Cond-exe
-          path: dist/Pref2Cond.exe
+          name: CondPredict-exe
+          path: dist/CondPredict.exe
           if-no-files-found: error
           retention-days: 14
 
