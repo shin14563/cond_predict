@@ -27,50 +27,18 @@ jobs:
 
       # ---- ビルド ----
       - name: Build exe with PyInstaller
-        run: |
-          pyinstaller --onefile ^
-            --name Pref2Cond ^
-            --add-data "app_resources;app_resources" ^
-            pref2cond_predict.py
+        run: pyinstaller --onefile --name Pref2Cond --add-data "app_resources;app_resources" pref2cond_predict.py
 
-      # ---- 実行用の入力を dist/ に用意 ----
-      # レポジトリに Pref2Cond.csv がある想定。
-      # 無い場合は下の "Create sample Pref2Cond.csv" を使ってサンプル生成に切り替えてOK。
-      - name: Copy Pref2Cond.csv next to exe
-        run: |
-          copy Pref2Cond.csv dist\Pref2Cond.csv
+      # ---- 入力を dist/ にコピー ----
+      - name: Copy Pref2Cond.csv
+        run: copy Pref2Cond.csv dist\Pref2Cond.csv
 
-      # サンプルが無いリポジトリの場合は、↑の step をコメントアウトして、↓を有効化
-      # - name: Create sample Pref2Cond.csv
-      #   shell: bash
-      #   run: |
-      #     cat > dist/Pref2Cond.csv << 'CSV'
-      #     検索パラメータ,case1
-      #     syoene,4
-      #     BPI_min,0.9
-      #     BPI_max,1.0
-      #     dannetu_min,80
-      #     dannetu_max,110
-      #     kaikouritu_min,0.6
-      #     kaikouritu_max,0.7
-      #     NS_Wall_min,100
-      #     NS_Wall_max,190
-      #     EW_Wall_min,200
-      #     EW_Wall_max,235
-      #     AreaRatio_min,0.5
-      #     AreaRatio_max,0.96
-      #     CSV
-
-      # ---- exe 実行（dist をカレントにしてダブルクリック相当）----
+      # ---- exe 実行（出力CSV生成）----
       - name: Run exe to produce outputs
         working-directory: dist
-        shell: bash
-        run: |
-          ./Pref2Cond.exe || exit 1
-          echo "== Generated files =="
-          ls -l
+        run: .\Pref2Cond.exe
 
-      # ---- 成果物アップロード（exe と出力 CSV を分けて保存）----
+      # ---- 成果物アップロード ----
       - name: Upload exe artifact
         uses: actions/upload-artifact@v4
         with:
