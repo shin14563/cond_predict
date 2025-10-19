@@ -27,7 +27,7 @@ jobs:
 
       # ---- ビルド ----
       - name: Build exe with PyInstaller
-        run: pyinstaller --onefile --name CondPredict --add-data "app_resources;app_resources" pref2cond_predict.py
+        run: pyinstaller --onefile --name CondPredict --add-data "app_resources;app_resources" pref2cond_predict2.py
 
       # ---- 入力を dist/ にコピー ----
       - name: Copy Pref2Cond.csv
