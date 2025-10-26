@@ -10,7 +10,7 @@ pref2cond_predict.py  (出力フォーマット刷新版)
     lower_WWR_- , upper_WWR_-            # ★ 0〜1（無次元）
     lower_VerticalLength_mm , upper_VerticalLength_mm
     lower_HorizontalLength_mm, upper_HorizontalLength_mm
-    lower_CoverageaRatio_- , upper_CoverageaRatio_-  # 0〜1（無次元）
+    lower_CoverageRatio_- , upper_CoverageRatio_-  # 0〜1（無次元）
 
 - 出力: 各caseごとに 1ファイル（CSV）
     [ブロック1] 入力レンジのまとめ 1行
@@ -20,7 +20,7 @@ pref2cond_predict.py  (出力フォーマット刷新版)
 
   代表8行の列:
     CaseName, EnergyCategory_-, InternalHeat_-,
-    VerticalLength_mm, HorizontalLength_mm, CoverageaRatio_-,
+    VerticalLength_mm, HorizontalLength_mm, CoverageRatio_-,
     Insulation_mm, WWR_-, U-value_-, SHGC_-,
     predictBEI_-, predictBPI_-, predictCooling_MJm2, predictHeating_MJm2
 
@@ -321,8 +321,8 @@ def make_candidates(case_params: dict, cfg: dict, feature_order: list[str],
     NS_max = case_params.get("upper_VerticalLength_mm", None)
     EW_min = case_params.get("lower_HorizontalLength_mm", None)
     EW_max = case_params.get("upper_HorizontalLength_mm", None)
-    AR_min = case_params.get("lower_CoverageaRatio_-", None)
-    AR_max = case_params.get("upper_CoverageaRatio_-", None)
+    AR_min = case_params.get("lower_CoverageRatio_-", None)
+    AR_max = case_params.get("upper_CoverageRatio_-", None)
 
     # 壁面3変数の生成（新方式）
     NS_all, EW_all, AR_all = _sample_walls_case_aware(
@@ -478,7 +478,7 @@ def pick_representatives(df: pd.DataFrame) -> list[int | None]:
 # ========== 出力ブロック生成 ==========
 REP_COLS = [
     "CaseName", "EnergyCategory_-", "InternalHeat_-", "VerticalLength_mm",
-    "HorizontalLength_mm", "CoverageaRatio_-", "Insulation_mm", "WWR_-",
+    "HorizontalLength_mm", "CoverageRatio_-", "Insulation_mm", "WWR_-",
     "U-value_-", "SHGC_-", "predictBEI_-", "predictBPI_-",
     "predictCooling_MJm2", "predictHeating_MJm2"
 ]
@@ -499,8 +499,8 @@ def build_summary_row(case_name: str, params: dict) -> pd.DataFrame:
         "upper_VerticalLength_mm",
         "lower_HorizontalLength_mm",
         "upper_HorizontalLength_mm",
-        "lower_CoverageaRatio_-",
-        "upper_CoverageaRatio_-",
+        "lower_CoverageRatio_-",
+        "upper_CoverageRatio_-",
     ]
 
     row = {
@@ -528,10 +528,10 @@ def build_summary_row(case_name: str, params: dict) -> pd.DataFrame:
         params.get("lower_HorizontalLength_mm", np.nan),
         "upper_HorizontalLength_mm":
         params.get("upper_HorizontalLength_mm", np.nan),
-        "lower_CoverageaRatio_-":
-        params.get("lower_CoverageaRatio_-", np.nan),
-        "upper_CoverageaRatio_-":
-        params.get("upper_CoverageaRatio_-", np.nan),
+        "lower_CoverageRatio_-":
+        params.get("lower_CoverageRatio_-", np.nan),
+        "upper_CoverageRatio_-":
+        params.get("upper_CoverageRatio_-", np.nan),
     }
     df = pd.DataFrame([row], columns=cols)
     # 数値丸め
@@ -557,7 +557,7 @@ def build_representative_block(df_rep_src: pd.DataFrame, preds: np.ndarray,
         pd.to_numeric(df_rep_src["NS_Wall"], errors="coerce").round(2),
         "HorizontalLength_mm":
         pd.to_numeric(df_rep_src["EW_Wall"], errors="coerce").round(2),
-        "CoverageaRatio_-":
+        "CoverageRatio_-":
         pd.to_numeric(df_rep_src["AreaRatio"], errors="coerce").round(2),
         "Insulation_mm":
         pd.to_numeric(df_rep_src["dannetu"],
