@@ -8,8 +8,8 @@ pref2cond_predict.py  (出力フォーマット刷新版)
     lower_BPI_- , upper_BPI_-
     lower_Insulation_mm , upper_Insulation_mm
     lower_WWR_- , upper_WWR_-            # ★ 0〜1（無次元）
-    lower_VerticalLength_mm , upper_VerticalLength_mm
-    lower_HorizontalLength_mm, upper_HorizontalLength_mm
+    lower_VerticalLength_m , upper_VerticalLength_m
+    lower_HorizontalLength_m, upper_HorizontalLength_m
     lower_CoverageRatio_- , upper_CoverageRatio_-  # 0〜1（無次元）
 
 - 出力: 各caseごとに 1ファイル（CSV）
@@ -20,7 +20,7 @@ pref2cond_predict.py  (出力フォーマット刷新版)
 
   代表8行の列:
     CaseName, EnergyCategory_-, InternalHeat_-,
-    VerticalLength_mm, HorizontalLength_mm, CoverageRatio_-,
+    VerticalLength_m, HorizontalLength_m, CoverageRatio_-,
     Insulation_mm, WWR_-, U-value_-, SHGC_-,
     predictBEI_-, predictBPI_-, predictCooling_MJm2, predictHeating_MJm2
 
@@ -317,10 +317,10 @@ def make_candidates(case_params: dict, cfg: dict, feature_order: list[str],
         "upper_SHGC_-", 0.50)) if "upper_SHGC_-" in case_params else 0.50
 
     # NS/EW/AreaRatio
-    NS_min = case_params.get("lower_VerticalLength_mm", None)
-    NS_max = case_params.get("upper_VerticalLength_mm", None)
-    EW_min = case_params.get("lower_HorizontalLength_mm", None)
-    EW_max = case_params.get("upper_HorizontalLength_mm", None)
+    NS_min = case_params.get("lower_VerticalLength_m", None)
+    NS_max = case_params.get("upper_VerticalLength_m", None)
+    EW_min = case_params.get("lower_HorizontalLength_m", None)
+    EW_max = case_params.get("upper_HorizontalLength_m", None)
     AR_min = case_params.get("lower_CoverageRatio_-", None)
     AR_max = case_params.get("upper_CoverageRatio_-", None)
 
@@ -477,8 +477,8 @@ def pick_representatives(df: pd.DataFrame) -> list[int | None]:
 
 # ========== 出力ブロック生成 ==========
 REP_COLS = [
-    "CaseName", "EnergyCategory_-", "InternalHeat_-", "VerticalLength_mm",
-    "HorizontalLength_mm", "CoverageRatio_-", "Insulation_mm", "WWR_-",
+    "CaseName", "EnergyCategory_-", "InternalHeat_-", "VerticalLength_m",
+    "HorizontalLength_m", "CoverageRatio_-", "Insulation_mm", "WWR_-",
     "U-value_-", "SHGC_-", "predictBEI_-", "predictBPI_-",
     "predictCooling_MJm2", "predictHeating_MJm2"
 ]
@@ -495,43 +495,31 @@ def build_summary_row(case_name: str, params: dict) -> pd.DataFrame:
         "upper_Insulation_mm",
         "lower_WWR_-",
         "upper_WWR_-",
-        "lower_VerticalLength_mm",
-        "upper_VerticalLength_mm",
-        "lower_HorizontalLength_mm",
-        "upper_HorizontalLength_mm",
+        "lower_VerticalLength_m",
+        "upper_VerticalLength_m",
+        "lower_HorizontalLength_m",
+        "upper_HorizontalLength_m",
         "lower_CoverageRatio_-",
         "upper_CoverageRatio_-",
     ]
 
     row = {
-        "CaseName":
-        case_name,
-        "EnergyCategory_-":
-        int(params.get("EnergyCategory_-", 1)),
-        "lower_BPI_-":
-        params.get("lower_BPI_-", np.nan),
-        "upper_BPI_-":
-        params.get("upper_BPI_-", np.nan),
-        "lower_Insulation_mm":
-        params.get("lower_Insulation_mm", np.nan),
-        "upper_Insulation_mm":
-        params.get("upper_Insulation_mm", np.nan),
-        "lower_WWR_-":
-        params.get("lower_WWR_-", np.nan),
-        "upper_WWR_-":
-        params.get("upper_WWR_-", np.nan),
-        "lower_VerticalLength_mm":
-        params.get("lower_VerticalLength_mm", np.nan),
-        "upper_VerticalLength_mm":
-        params.get("upper_VerticalLength_mm", np.nan),
-        "lower_HorizontalLength_mm":
-        params.get("lower_HorizontalLength_mm", np.nan),
-        "upper_HorizontalLength_mm":
-        params.get("upper_HorizontalLength_mm", np.nan),
-        "lower_CoverageRatio_-":
-        params.get("lower_CoverageRatio_-", np.nan),
-        "upper_CoverageRatio_-":
-        params.get("upper_CoverageRatio_-", np.nan),
+        "CaseName": case_name,
+        "EnergyCategory_-": int(params.get("EnergyCategory_-", 1)),
+        "lower_BPI_-": params.get("lower_BPI_-", np.nan),
+        "upper_BPI_-": params.get("upper_BPI_-", np.nan),
+        "lower_Insulation_mm": params.get("lower_Insulation_mm", np.nan),
+        "upper_Insulation_mm": params.get("upper_Insulation_mm", np.nan),
+        "lower_WWR_-": params.get("lower_WWR_-", np.nan),
+        "upper_WWR_-": params.get("upper_WWR_-", np.nan),
+        "lower_VerticalLength_m": params.get("lower_VerticalLength_m", np.nan),
+        "upper_VerticalLength_m": params.get("upper_VerticalLength_m", np.nan),
+        "lower_HorizontalLength_m": params.get("lower_HorizontalLength_m",
+                                               np.nan),
+        "upper_HorizontalLength_m": params.get("upper_HorizontalLength_m",
+                                               np.nan),
+        "lower_CoverageRatio_-": params.get("lower_CoverageRatio_-", np.nan),
+        "upper_CoverageRatio_-": params.get("upper_CoverageRatio_-", np.nan),
     }
     df = pd.DataFrame([row], columns=cols)
     # 数値丸め
@@ -553,9 +541,9 @@ def build_representative_block(df_rep_src: pd.DataFrame, preds: np.ndarray,
         "InternalHeat_-":
         pd.to_numeric(df_rep_src["setsubi_1"],
                       errors="coerce").round(0).astype("Int64"),
-        "VerticalLength_mm":
+        "VerticalLength_m":
         pd.to_numeric(df_rep_src["NS_Wall"], errors="coerce").round(2),
-        "HorizontalLength_mm":
+        "HorizontalLength_m":
         pd.to_numeric(df_rep_src["EW_Wall"], errors="coerce").round(2),
         "CoverageRatio_-":
         pd.to_numeric(df_rep_src["AreaRatio"], errors="coerce").round(2),
